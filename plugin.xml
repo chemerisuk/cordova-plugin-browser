@@ -1,0 +1,57 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android"
+           id="cordova-plugin-browser"
+      version="0.1.0">
+
+    <name>BrowserPlugin</name>
+    <description>Open browser activity in app</description>
+    <license>MIT</license>
+    <keywords>cordova</keywords>
+    <repo>https://github.com/chemerisuk/cordova-plugin-browser</repo>
+    <issue>https://github.com/chemerisuk/cordova-plugin-browser/issues</issue>
+
+    <js-module src="www/BrowserPlugin.js" name="BrowserPlugin">
+        <merges target="cordova.plugins.browser" />
+    </js-module>
+
+    <engines>
+        <engine name="cordova" version=">=6.0.0"/>
+        <engine name="cordova-android" version=">=6.0.0"/>
+        <engine name="cordova-ios" version=">=4.4.0"/>
+    </engines>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="BrowserPlugin">
+                <param name="ios-package" value="BrowserPlugin" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/BrowserPlugin.h" />
+        <source-file src="src/ios/BrowserPlugin.m" />
+
+        <framework src="Firebase/Core" type="podspec" spec="~> 5.0"/>
+    </platform>
+
+    <platform name="android">
+        <preference name="CUSTOMTABS_VERSION" default="27.+"/>
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="BrowserPlugin">
+                <param name="android-package" value="by.chemerisuk.cordova.browser.BrowserPlugin" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+
+        <dependency id="cordova-support-android-plugin" version="~0.3.5"/>
+
+        <framework src="com.android.support:customtabs:$CUSTOMTABS_VERSION"/>
+
+        <source-file src="src/android/BrowserPlugin.java"
+            target-dir="src/by/chemerisuk/cordova/browser/" />
+    </platform>
+
+</plugin>
