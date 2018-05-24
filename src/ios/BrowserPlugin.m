@@ -14,7 +14,7 @@
         if ([url isKindOfClass:NSURL.class] && [sourceApplication isKindOfClass:NSString.class]) {
             if ([sourceApplication isEqual:@"com.apple.SafariViewService"]) {
                 if (_safariViewController) {
-                    [_safariViewController dismissViewControllerAnimated:YES completion:nil];
+                    [_safariViewController dismissViewControllerAnimated:NO completion:nil];
                     [self safariViewControllerDidFinish:_safariViewController];
                 }
             }
@@ -50,14 +50,12 @@
     } else {
         NSURL *url = [NSURL URLWithString:urlString];
         id readerMode = options[@"readerMode"];
-        id animated = options[@"animated"];
         BOOL readerModeFlag = readerMode ? [readerMode boolValue] : NO;
-        BOOL animatedFlag = animated ? [animated boolValue] : NO;
 
         _safariViewController = [[SFSafariViewController alloc] initWithURL:url entersReaderIfAvailable:readerModeFlag];
         _safariViewController.delegate = self;
 
-        [self.viewController presentViewController:_safariViewController animated:animatedFlag completion:nil];
+        [self.viewController presentViewController:_safariViewController animated:YES completion:nil];
 
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
