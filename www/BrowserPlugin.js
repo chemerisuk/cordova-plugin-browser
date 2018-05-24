@@ -6,20 +6,13 @@ module.exports = {
     open: function(url, options) {
         if (!promiseReady) {
             promiseReady = new Promise(function(resolve, reject) {
-                exec(resolve, reject, PLUGIN_NAME, "init", []);
+                exec(resolve, reject, PLUGIN_NAME, "ready", []);
             });
         }
 
         return promiseReady.then(function() {
             return new Promise(function(resolve, reject) {
                 exec(resolve, reject, PLUGIN_NAME, "open", [url, options || {}]);
-            });
-        });
-    },
-    close: function() {
-        return promiseReady.then(function() {
-            return new Promise(function(resolve, reject) {
-                exec(resolve, reject, PLUGIN_NAME, "close", []);
             });
         });
     },

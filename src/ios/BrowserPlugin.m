@@ -4,8 +4,32 @@
     SFSafariViewController *_safariViewController;
 }
 
-- (void)init:(CDVInvokedUrlCommand *)command {
-    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+- (void)handleOpenURLWithApplicationSourceAndAnnotation:(NSNotification*)notification {
+    NSDictionary*  notificationData = [notification object];
+
+    if ([notificationData isKindOfClass: NSDictionary.class]) {
+        NSURL* url = notificationData[@"url"];
+        NSString* sourceApplication = notificationData[@"sourceApplication"];
+
+        if ([url isKindOfClass:NSURL.class] && [sourceApplication isKindOfClass:NSString.class]) {
+            if ([sourceApplication isEqual:@"com.apple.SafariViewService"]) {
+                if (_safariViewController) {
+                    [_safariViewController dismissViewControllerAnimated:YES completion:nil];
+                    [self safariViewControllerDidFinish:_safariViewController];
+                }
+            }
+        }
+    }
+}
+
+- (void)ready:(CDVInvokedUrlCommand *)command {
+    CDVPluginResult *result;
+    if ([SFSafariViewController class]) {
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    } else {
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                   messageAsString:@"SFSafariViewController is not available"];
+    }
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
@@ -40,16 +64,6 @@
     }
 }
 
-- (void)close:(CDVInvokedUrlCommand *)command {
-    if (_safariViewController) {
-        [_safariViewController dismissViewControllerAnimated:YES completion:nil];
-        _safariViewController = nil;
-    }
-
-    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-}
-
 - (void)onLoad:(CDVInvokedUrlCommand *)command {
     self.loadCallbackId = command.callbackId;
 }
@@ -68,6 +82,8 @@
 }
 
 - (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
+    _safariViewController = nil;
+
     if (self.closeCallbackId) {
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:result callbackId:self.closeCallbackId];

@@ -31,14 +31,12 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
     private CallbackContext closeCallback;
 
     @CordovaMethod
-    protected void init(final CallbackContext callbackContext) {
+    protected void ready(final CallbackContext callbackContext) {
         Context context = cordova.getActivity();
         String packageName = CustomTabsClient.getPackageName(context, null);
         CustomTabsClient.bindCustomTabsService(context, packageName, new CustomTabsServiceConnection() {
             @Override
             public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
-                Log.d(TAG, "onCustomTabsServiceConnected");
-
                 customTabsClient = client;
                 callbackContext.success();
             }
@@ -52,7 +50,7 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
 
     @CordovaMethod
     protected void open(String urlStr, JSONObject options, CallbackContext callbackContext) throws JSONException {
-        CustomTabsSession session = customTabsClient.newSession(new CustomTabsCallback() {
+        CustomTabsSession session = this.customTabsClient.newSession(new CustomTabsCallback() {
             @Override
             public void onNavigationEvent(int navigationEvent, Bundle extras) {
                 Log.d(TAG, "onNavigationEvent " + navigationEvent);
@@ -75,11 +73,6 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
         CustomTabsIntent customTabsIntent = customTabsIntentBuilder.build();
         customTabsIntent.launchUrl(cordova.getActivity(), Uri.parse(urlStr));
 
-        callbackContext.success();
-    }
-
-    @CordovaMethod
-    protected void close(CallbackContext callbackContext) {
         callbackContext.success();
     }
 

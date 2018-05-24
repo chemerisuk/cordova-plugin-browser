@@ -17,7 +17,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <engines>
         <engine name="cordova" version=">=6.0.0"/>
         <engine name="cordova-android" version=">=6.0.0"/>
-        <engine name="cordova-ios" version=">=4.4.0"/>
+        <engine name="cordova-ios" version=">=4.5.0"/>
     </engines>
 
     <platform name="ios">
@@ -25,6 +25,21 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <feature name="BrowserPlugin">
                 <param name="ios-package" value="BrowserPlugin" />
             </feature>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleTypeRole</key>
+                    <string>Editor</string>
+                    <key>CFBundleURLName</key>
+                    <string>BUNDLE_ID</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>$PACKAGE_NAME</string>
+                    </array>
+                </dict>
+            </array>
         </config-file>
 
         <header-file src="src/ios/BrowserPlugin.h" />
@@ -44,6 +59,15 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="$PACKAGE_NAME"/>
+            </intent-filter>
         </config-file>
 
         <dependency id="cordova-support-android-plugin" version="~0.3.5"/>
