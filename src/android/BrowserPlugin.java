@@ -53,17 +53,15 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
         CustomTabsSession session = this.customTabsClient.newSession(new CustomTabsCallback() {
             @Override
             public void onNavigationEvent(int navigationEvent, Bundle extras) {
-                Log.d(TAG, "onNavigationEvent " + navigationEvent);
-
                 if (navigationEvent == CustomTabsCallback.NAVIGATION_FINISHED) {
                     if (loadCallback != null) {
-                        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK);
-                        pluginResult.setKeepCallback(true);
-                        loadCallback.sendPluginResult(pluginResult);
+                        loadCallback.success();
+                        loadCallback = null;
                     }
                 } else if (navigationEvent == CustomTabsCallback.TAB_HIDDEN) {
                     if (closeCallback != null) {
                         closeCallback.success();
+                        closeCallback = null;
                     }
                 }
             }
