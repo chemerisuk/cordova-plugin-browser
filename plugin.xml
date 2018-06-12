@@ -70,7 +70,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </intent-filter>
         </config-file>
 
-        <dependency id="cordova-support-android-plugin" version="~0.3.5"/>
+        <dependency id="cordova-support-android-plugin" version="~0.4.1"/>
 
         <framework src="com.android.support:customtabs:$CUSTOMTABS_VERSION"/>
 
