@@ -85,9 +85,12 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
             context.startActivity(intent);
         } else {
             CustomTabsSession session = this.customTabsClient.newSession(this.customTabsCallback);
-            CustomTabsIntent.Builder customTabsIntentBuilder = new CustomTabsIntent.Builder(session);
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(session);
+            // add nice animation for custom tabs
+            builder.setStartAnimations(context, getAnimResId("slide_in_right"), getAnimResId("slide_out_left"));
+            builder.setExitAnimations(context, getAnimResId("slide_in_left"), getAnimResId("slide_out_right"));
             // TODO
-            CustomTabsIntent customTabsIntent = customTabsIntentBuilder.build();
+            CustomTabsIntent customTabsIntent = builder.build();
             customTabsIntent.launchUrl(context, uri);
         }
 
@@ -118,5 +121,12 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
             this.closeCallback.success();
             this.closeCallback = null;
         }
+    }
+
+    private int getAnimResId(String name) {
+        Context context = this.cordova.getActivity();
+
+        return context.getResources()
+            .getIdentifier(name, "anim", context.getPackageName());
     }
 }

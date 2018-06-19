@@ -76,6 +76,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <source-file src="src/android/BrowserPlugin.java"
             target-dir="src/by/chemerisuk/cordova/browser/" />
+        <source-file src="src/android/res/anim/slide_in_left.xml" target-dir="res/anim" />
+        <source-file src="src/android/res/anim/slide_in_right.xml" target-dir="res/anim" />
+        <source-file src="src/android/res/anim/slide_out_left.xml" target-dir="res/anim" />
+        <source-file src="src/android/res/anim/slide_out_right.xml" target-dir="res/anim" />
     </platform>
 
 </plugin>
