@@ -2,8 +2,10 @@ package by.chemerisuk.cordova.browser;
 
 import android.content.Context;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Browser;
 import android.support.customtabs.CustomTabsCallback;
 import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
@@ -27,49 +29,67 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
     private static final String TAG = "BrowserPlugin";
 
     private CustomTabsClient customTabsClient;
+    private CustomTabsCallback customTabsCallback;
+
     private CallbackContext loadCallback;
     private CallbackContext closeCallback;
 
     @CordovaMethod
     protected void ready(final CallbackContext callbackContext) {
-        Context context = cordova.getActivity();
+        Context context = this.cordova.getActivity();
         String packageName = CustomTabsClient.getPackageName(context, null);
-        CustomTabsClient.bindCustomTabsService(context, packageName, new CustomTabsServiceConnection() {
-            @Override
-            public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
-                customTabsClient = client;
-                callbackContext.success();
-            }
+        if (packageName == null) {
+            callbackContext.success();
+        } else {
+            CustomTabsClient.bindCustomTabsService(context, packageName, new CustomTabsServiceConnection() {
+                @Override
+                public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
+                    customTabsClient = client;
+                    customTabsCallback = new CustomTabsCallback() {
+                        @Override
+                        public void onNavigationEvent(int navigationEvent, Bundle extras) {
+                            if (navigationEvent == CustomTabsCallback.NAVIGATION_FINISHED) {
+                                if (loadCallback != null) {
+                                    loadCallback.success();
+                                    loadCallback = null;
+                                }
+                            } else if (navigationEvent == CustomTabsCallback.TAB_HIDDEN) {
+                                if (closeCallback != null) {
+                                    closeCallback.success();
+                                    closeCallback = null;
+                                }
+                            }
+                        }
+                    };
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.d(TAG, "onServiceDisconnected");
-            }
-        });
+                    callbackContext.success();
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    Log.d(TAG, "onServiceDisconnected");
+                }
+            });
+        }
     }
 
     @CordovaMethod
     protected void open(String urlStr, JSONObject options, CallbackContext callbackContext) throws JSONException {
-        CustomTabsSession session = this.customTabsClient.newSession(new CustomTabsCallback() {
-            @Override
-            public void onNavigationEvent(int navigationEvent, Bundle extras) {
-                if (navigationEvent == CustomTabsCallback.NAVIGATION_FINISHED) {
-                    if (loadCallback != null) {
-                        loadCallback.success();
-                        loadCallback = null;
-                    }
-                } else if (navigationEvent == CustomTabsCallback.TAB_HIDDEN) {
-                    if (closeCallback != null) {
-                        closeCallback.success();
-                        closeCallback = null;
-                    }
-                }
-            }
-        });
-        CustomTabsIntent.Builder customTabsIntentBuilder = new CustomTabsIntent.Builder(session);
-        // TODO
-        CustomTabsIntent customTabsIntent = customTabsIntentBuilder.build();
-        customTabsIntent.launchUrl(cordova.getActivity(), Uri.parse(urlStr));
+        Context context = this.cordova.getActivity();
+        Uri uri = Uri.parse(urlStr);
+
+        if (this.customTabsClient == null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+            context.startActivity(intent);
+        } else {
+            CustomTabsSession session = this.customTabsClient.newSession(this.customTabsCallback);
+            CustomTabsIntent.Builder customTabsIntentBuilder = new CustomTabsIntent.Builder(session);
+            // TODO
+            CustomTabsIntent customTabsIntent = customTabsIntentBuilder.build();
+            customTabsIntent.launchUrl(context, uri);
+        }
 
         callbackContext.success();
     }
@@ -82,5 +102,21 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
     @CordovaMethod
     protected void onClose(CallbackContext callbackContext) {
         this.closeCallback = callbackContext;
+    }
+
+    @Override
+    public void onPause(boolean multitasking) {
+        if (this.customTabsClient == null && this.loadCallback != null) {
+            this.loadCallback.success();
+            this.loadCallback = null;
+        }
+    }
+
+    @Override
+    public void onResume(boolean multitasking) {
+        if (this.customTabsClient == null && this.closeCallback != null) {
+            this.closeCallback.success();
+            this.closeCallback = null;
+        }
     }
 }
