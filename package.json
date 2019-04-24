@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-browser",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Open browser in your app",
   "cordova": {
     "id": "cordova-plugin-browser",
