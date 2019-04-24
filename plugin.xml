@@ -49,7 +49,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </platform>
 
     <platform name="android">
-        <preference name="CUSTOMTABS_VERSION" default="27.+"/>
+        <preference name="CUSTOMTABS_VERSION" default="28.+"/>
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="BrowserPlugin">
