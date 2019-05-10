@@ -45,7 +45,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <header-file src="src/ios/BrowserPlugin.h" />
         <source-file src="src/ios/BrowserPlugin.m" />
 
-        <framework src="Firebase/Core" type="podspec" spec="~> 5.0"/>
+        <framework src="SafariServices.framework" weak="true"/>
     </platform>
 
     <platform name="android">
