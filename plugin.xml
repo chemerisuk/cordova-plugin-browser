@@ -49,7 +49,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </platform>
 
     <platform name="android">
-        <preference name="CUSTOMTABS_VERSION" default="28.+"/>
+        <preference name="ANDROIDX_BROWSER_VERSION" default="1.0.+"/>
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="BrowserPlugin">
@@ -72,7 +72,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
 
-        <framework src="com.android.support:customtabs:$CUSTOMTABS_VERSION"/>
+        <framework src="androidx.browser:browser:$ANDROIDX_BROWSER_VERSION"/>
 
         <source-file src="src/android/BrowserPlugin.java"
             target-dir="src/by/chemerisuk/cordova/browser/" />
