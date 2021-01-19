@@ -5,9 +5,11 @@ The project allows to load urls in [SFSafariViewController](https://developer.ap
 
 ## Installation
 
-    cordova plugin add cordova-plugin-browser --save
+    $ cordova plugin add cordova-plugin-browser
 
-Use variable `CUSTOMTABS_VERSION` to override dependency version on Android.
+Use variable `ANDROIDX_BROWSER_VERSION` to override dependency version on Android:
+
+    $ cordova plugin add cordova-plugin-browser --variable ANDROIDX_BROWSER_VERSION='1.0.+'
 
 ## Supported Platforms
 
@@ -38,7 +40,7 @@ cordova.plugins.browser.onLoad(function() {
 ### onClose(_callback_)
 Callback is triggered when browser activity was closed.
 ```js
-cordova.plugins.browser.onLoad(function() {
+cordova.plugins.browser.onClose(function() {
     console.log("browser activity was closed");
 });
 ```
