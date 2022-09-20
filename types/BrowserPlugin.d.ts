@@ -1,9 +1,3 @@
-var PLUGIN_NAME = "BrowserPlugin";
-// @ts-ignore
-var exec = require("cordova/exec");
-var promiseReady;
-
-exports.open =
 /**
  * Opens a url in browser activity.
  *
@@ -16,21 +10,7 @@ exports.open =
  * cordova.plugins.browser.open("https://google.com");
  * cordova.plugins.browser.open("https://google.com", {readerMode: true});
  */
-function(url, options) {
-    if (!promiseReady) {
-        promiseReady = new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "ready", []);
-        });
-    }
-
-    return promiseReady.then(function() {
-        return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "open", [url, options || {}]);
-        });
-    });
-};
-
-exports.onLoad =
+export function open(url: any, options: any): Promise<void>;
 /**
  * Trigger a callback when browser finished loading page successfully.
  *
@@ -42,11 +22,7 @@ exports.onLoad =
  *     console.log("my url is loaded");
  * });
  */
-function(callback, errorCallback) {
-    exec(callback, errorCallback, PLUGIN_NAME, "onLoad", []);
-};
-
-exports.onClose =
+export function onLoad(callback: () => void, errorCallback?: (error: string) => void): void;
 /**
  * Trigger a callback when browser activity was closed.
  *
@@ -58,6 +34,4 @@ exports.onClose =
  *     console.log("browser activity was closed");
  * });
  */
-function(callback, errorCallback) {
-    exec(callback, errorCallback, PLUGIN_NAME, "onClose", []);
-};
+export function onClose(callback: () => void, errorCallback?: (error: string) => void): void;

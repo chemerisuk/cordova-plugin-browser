@@ -1,29 +1,3 @@
-# cordova-plugin-browser<br>[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
-> Open browser in your app
-
-The project allows to load urls in [SFSafariViewController](https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller?language=objc)/[Chrome Custom Tabs](https://developer.chrome.com/multidevice/android/customtabs). 
-
-[npm-url]: https://www.npmjs.com/package/cordova-plugin-browser
-[npm-version]: https://img.shields.io/npm/v/cordova-plugin-browser.svg
-[npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-browser.svg
-[twitter-url]: https://twitter.com/chemerisuk
-[twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
-
-## Installation
-
-    $ cordova plugin add cordova-plugin-browser
-
-Use variable `ANDROIDX_BROWSER_VERSION` to override dependency version on Android:
-
-    $ cordova plugin add cordova-plugin-browser --variable ANDROIDX_BROWSER_VERSION='1.0.+'
-
-## Supported Platforms
-
-- iOS
-- Android
-
-<!-- TypedocGenerated -->
-
 ## Functions
 
 ### onClose
