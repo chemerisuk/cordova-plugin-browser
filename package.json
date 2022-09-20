@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-browser",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Open browser in your app",
   "types": "./types/index.d.ts",
   "cordova": {
