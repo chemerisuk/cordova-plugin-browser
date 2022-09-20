@@ -49,7 +49,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </platform>
 
     <platform name="android">
-        <preference name="ANDROIDX_BROWSER_VERSION" default="1.0.+"/>
+        <preference name="ANDROIDX_BROWSER_VERSION" default="1.4.+"/>
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="BrowserPlugin">
@@ -70,7 +70,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </intent-filter>
         </config-file>
 
-        <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
+        <dependency id="cordova-support-android-plugin" version="~2.0.4" />
 
         <framework src="androidx.browser:browser:$ANDROIDX_BROWSER_VERSION"/>
 

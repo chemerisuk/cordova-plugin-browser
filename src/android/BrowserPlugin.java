@@ -18,9 +18,8 @@ import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
 
 import org.apache.cordova.CallbackContext;
 
+import org.apache.cordova.CordovaArgs;
 import org.json.JSONException;
-import org.json.JSONObject;
-
 
 public class BrowserPlugin extends ReflectiveCordovaPlugin {
     private static final String TAG = "BrowserPlugin";
@@ -58,7 +57,6 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
                             }
                         }
                     };
-
                     callbackContext.success();
                 }
 
@@ -71,17 +69,16 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
     }
 
     @CordovaMethod
-    protected void open(String urlStr, JSONObject options, CallbackContext callbackContext) throws JSONException {
-        Context context = this.cordova.getActivity();
-        Uri uri = Uri.parse(urlStr);
-
-        if (this.customTabsClient == null) {
+    protected void open(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+        Uri uri = Uri.parse(args.getString(0));
+        Context context = cordova.getActivity();
+        if (customTabsClient == null) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(uri);
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
             context.startActivity(intent);
         } else {
-            CustomTabsSession session = this.customTabsClient.newSession(this.customTabsCallback);
+            CustomTabsSession session = customTabsClient.newSession(this.customTabsCallback);
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(session);
             // add nice animation for custom tabs
             builder.setStartAnimations(context, getAnimResId("slide_in_right"), getAnimResId("slide_out_left"));
@@ -90,39 +87,37 @@ public class BrowserPlugin extends ReflectiveCordovaPlugin {
             CustomTabsIntent customTabsIntent = builder.build();
             customTabsIntent.launchUrl(context, uri);
         }
-
         callbackContext.success();
     }
 
     @CordovaMethod
     protected void onLoad(CallbackContext callbackContext) {
-        this.loadCallback = callbackContext;
+        loadCallback = callbackContext;
     }
 
     @CordovaMethod
     protected void onClose(CallbackContext callbackContext) {
-        this.closeCallback = callbackContext;
+        closeCallback = callbackContext;
     }
 
     @Override
     public void onPause(boolean multitasking) {
-        if (this.customTabsClient == null && this.loadCallback != null) {
-            this.loadCallback.success();
-            this.loadCallback = null;
+        if (customTabsClient == null && loadCallback != null) {
+            loadCallback.success();
+            loadCallback = null;
         }
     }
 
     @Override
     public void onResume(boolean multitasking) {
-        if (this.customTabsClient == null && this.closeCallback != null) {
-            this.closeCallback.success();
-            this.closeCallback = null;
+        if (customTabsClient == null && closeCallback != null) {
+            closeCallback.success();
+            closeCallback = null;
         }
     }
 
     private int getAnimResId(String name) {
-        Context context = this.cordova.getActivity();
-
+        Context context = cordova.getActivity();
         return context.getResources()
             .getIdentifier(name, "anim", context.getPackageName());
     }
